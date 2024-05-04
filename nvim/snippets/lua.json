@@ -1,0 +1,15 @@
+{
+  "pcall_status": {
+    "prefix": "nvim_plug_req",
+    "body": [
+      "local ${1}_status_ok, ${2:_} = pcall(require, \"${3:_}\")",
+      "if not ${1}_status_ok then",
+      "\tvim.notify(\"Plugin ${3:_} is missing\")",
+      "\treturn",
+      "end",
+      "\n",
+      "${2:_}.setup({\n\t${0}\n})"
+    ],
+    "description": "Import a neovim plugin for configuration"
+  }
+}
