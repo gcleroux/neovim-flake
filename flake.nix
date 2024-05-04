@@ -14,8 +14,35 @@
 
         inherit (import ./nix { inherit pkgs; }) plugins packagesPath;
 
+        initFile = pkgs.writeTextFile {
+          name = "init.lua";
+          text = ''
+            vim.loader.enable()
+            vim.opt.rtp:append("${./nvim}")
+            vim.g.plugin_config_dir = "${./nvim/lua}"
+
+            -- Setup global config
+            require("globals")
+
+            -- Plugins config
+            require("plugins")
+
+            -- Set up the colorscheme (comes before ui)
+            require("themes.nordfox")
+
+            -- Set up the UI
+            require("ui")
+
+            -- Debuggers config
+            require("debuggers")
+
+            -- Set up LSP (Should be loaded last)
+            require("lsp")
+          '';
+        };
+
         neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
-          customRC = "luafile ${./init.lua}";
+          customRC = "luafile ${initFile}";
         } // {
           viAlias = true;
           vimAlias = true;
@@ -31,7 +58,8 @@
           ];
         };
       in rec {
-        packages.neovim-flake = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped neovimConfig;
+        packages.neovim-flake =
+          pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped neovimConfig;
         packages.default = packages.neovim-flake;
 
         apps.neovim-flake = inputs.flake-utils.lib.mkApp {

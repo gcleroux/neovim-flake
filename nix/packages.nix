@@ -1,5 +1,9 @@
 { pkgs, ... }: rec {
   packages = with pkgs; [
+    # File manager
+    nnn
+    git
+
     # Telescope tools
     ripgrep
     fd
