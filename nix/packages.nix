@@ -1,4 +1,5 @@
-{ pkgs, ... }: rec {
+{ pkgs, ... }:
+rec {
   packages = with pkgs; [
     # File manager
     nnn
@@ -64,7 +65,7 @@
     cbfmt
     gofumpt
     isort
-    nixfmt
+    nixfmt-rfc-style
     prettierd
     shfmt
     stylua
@@ -80,4 +81,3 @@
 
   packagesPath = pkgs.lib.makeBinPath packages;
 }
-

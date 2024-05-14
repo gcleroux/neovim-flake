@@ -4,8 +4,10 @@
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, ... }@inputs:
-    inputs.flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    { self, ... }@inputs:
+    inputs.flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = import inputs.nixpkgs {
           inherit system;
@@ -41,9 +43,7 @@
           '';
         };
 
-        neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
-          customRC = "luafile ${initFile}";
-        } // {
+        neovimConfig = pkgs.neovimUtils.makeNeovimConfig { customRC = "luafile ${initFile}"; } // {
           viAlias = true;
           vimAlias = true;
           withNodeJs = false;
@@ -57,9 +57,9 @@
             "${packagesPath}"
           ];
         };
-      in rec {
-        packages.neovim-flake =
-          pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped neovimConfig;
+      in
+      rec {
+        packages.neovim-flake = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped neovimConfig;
         packages.default = packages.neovim-flake;
 
         apps.neovim-flake = inputs.flake-utils.lib.mkApp {
@@ -69,7 +69,12 @@
         };
         apps.default = apps.neovim-flake;
 
-        devShell =
-          pkgs.mkShell { buildInputs = [ packages.neovim-flake pkgs.just ]; };
-      });
+        devShell = pkgs.mkShell {
+          buildInputs = [
+            packages.neovim-flake
+            pkgs.just
+          ];
+        };
+      }
+    );
 }

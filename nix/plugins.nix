@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   plugins = with pkgs.vimPlugins; [
     # LSP plugins
     go-nvim
