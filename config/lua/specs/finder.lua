@@ -1,0 +1,92 @@
+-- fzf-lua is the picker used everywhere (LSP keymaps, neoclip, the CRD
+-- helper), so `on_require` matters at least as much as its own keymaps.
+return {
+    {
+        "fzf-lua",
+        cmd = "FzfLua",
+        on_require = "fzf-lua",
+        keys = {
+            { "<leader>f", "<cmd>FzfLua files<cr>", desc = "Find files" },
+            { "<leader>t", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
+        },
+        after = function()
+            require("fzf-lua").setup({
+                winopts = { preview = { default = "bat" } },
+                manpages = { previewer = "man_native" },
+                helptags = { previewer = "help_native" },
+                lsp = { code_actions = { previewer = "codeaction_native" } },
+                tags = { previewer = "bat" },
+                btags = { previewer = "bat" },
+            })
+        end,
+    },
+
+    {
+        "nvim-neoclip.lua",
+        on_require = "neoclip",
+        keys = {
+            {
+                "<leader>x",
+                function()
+                    require("neoclip.fzf")('"')
+                end,
+                desc = "Clipboard history",
+            },
+        },
+        after = function()
+            require("neoclip").setup({
+                history = 1000,
+                enable_persistent_history = false,
+                length_limit = 1048576,
+                continuous_sync = false,
+                db_path = vim.fn.stdpath("data") .. "/databases/neoclip.sqlite3",
+                filter = nil,
+                preview = true,
+                prompt = nil,
+                default_register = "+", -- Uses unnamedplus by default
+                default_register_macros = "q",
+                enable_macro_history = true,
+                content_spec_column = false,
+                on_select = {
+                    move_to_front = false,
+                    close_telescope = true,
+                },
+                on_paste = {
+                    set_reg = false,
+                    move_to_front = false,
+                    close_telescope = true,
+                },
+                on_replay = {
+                    set_reg = false,
+                    move_to_front = false,
+                    close_telescope = true,
+                },
+                on_custom_action = {
+                    close_telescope = true,
+                },
+                keys = {
+                    telescope = {
+                        i = {
+                            select = "<cr>",
+                            paste = "<c-p>",
+                            paste_behind = "<c-o>",
+                            replay = "<c-q>", -- replay a macro
+                            delete = "<c-d>", -- delete an entry
+                            edit = "<c-e>", -- edit an entry
+                            custom = {},
+                        },
+                        n = {
+                            select = "<cr>",
+                            paste = "p",
+                            paste_behind = "P",
+                            replay = "q",
+                            delete = "d",
+                            edit = "e",
+                            custom = {},
+                        },
+                    },
+                },
+            })
+        end,
+    },
+}

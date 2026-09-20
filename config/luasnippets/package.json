@@ -1,0 +1,31 @@
+{
+    "name": "custom-snippets",
+    "author": "gcleroux",
+    "engines": {
+        "vscode": "^1.11.0"
+    },
+    "contributes": {
+        "snippets": [
+            {
+                "language": [
+                    "markdown",
+                    "rmd"
+                ],
+                "path": "./markdown.json"
+            },
+            {
+                "language": "lua",
+                "path": "./lua.json"
+            },
+            {
+                "language": [
+                    "shellscript",
+                    "shell",
+                    "sh",
+                    "zsh"
+                ],
+                "path": "./shell.json"
+            }
+        ]
+    }
+}

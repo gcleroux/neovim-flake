@@ -1,0 +1,9 @@
+{
+    "TOC": {
+        "prefix": "toc",
+        "body": [
+            "<!-- toc -->"
+        ],
+        "description": "Create TOC annotation for markdown-toc extension"
+    }
+}
