@@ -20,26 +20,59 @@ install modules for NixOS, home-manager and nix-darwin.
 | --- | --- |
 | `packages.<system>.full` (`default`) | everything: plugins, language servers, formatters, linters, debug tooling |
 | `packages.<system>.slim` | same config and plugins, no servers and no tooling beyond `bat`/`fd`/`git`/`ripgrep` — for remote boxes |
-| `homeModules.default`, `nixosModules.default` | `wrappers.neovim.enable = true;` plus every option in `nix/module.nix` |
+| `nixosModules.default`, `homeModules.default`, `darwinModules.default` | one module under three names: `wrappers.neovim.enable = true;` plus every option in `nix/module.nix` |
 | `overlays.default` | adds `pkgs.nvim` |
 | `wrapperModules.default` | the raw module, to compose into your own wrapper |
 | `wrappers.neovim.wrap` | `wrap [ { inherit pkgs; } { settings.withTools = false; } ]` for a one-off variant |
 
-### home-manager
+### Installing it
+
+The install module works out which module system it is in, so the options are
+the same everywhere; only the file you put them in changes.
+
+NixOS, with or without home-manager:
+
+```nix
+# configuration.nix
+{
+  imports = [ inputs.neovim-flake.nixosModules.default ];
+
+  wrappers.neovim.enable = true;   # -> environment.systemPackages
+  environment.variables.EDITOR = "nvim";
+}
+```
+
+home-manager (nix-darwin is the same, via `darwinModules.default`):
 
 ```nix
 {
   imports = [ inputs.neovim-flake.homeModules.default ];
 
   wrappers.neovim = {
-    enable = true;
+    enable = true;                 # -> home.packages
     settings.nixd = {
       nixpkgs = ''import (builtins.getFlake "/etc/nixos").inputs.nixpkgs { }'';
       nixos = ''(builtins.getFlake "/etc/nixos").nixosConfigurations.myhost.options'';
     };
   };
+
+  home.sessionVariables.EDITOR = "nvim";
 }
 ```
+
+No modules at all — it is just a package:
+
+```nix
+environment.systemPackages = [ inputs.neovim-flake.packages.${pkgs.system}.full ];
+home.packages = [ inputs.neovim-flake.packages.${pkgs.system}.slim ];
+```
+
+```bash
+nix profile install github:gcleroux/neovim-flake
+```
+
+Nothing is read from `~/.config/nvim` and nothing is written to a home
+directory, so there is nothing for home-manager to manage either way.
 
 ### A smaller build
 

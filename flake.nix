@@ -38,6 +38,14 @@
       module = ./nix/module.nix;
       wrapper = (wrappers.lib.evalModule module).config;
 
+      # One install module for every module system: it detects which one it
+      # is in and installs accordingly. Exposed under each ecosystem's
+      # conventional name below so the import reads right at the call site.
+      installModule = wrappers.lib.getInstallModule {
+        name = "neovim";
+        value = module;
+      };
+
       # Same config and plugins, no language servers and no tooling beyond
       # what the config needs to not look broken. For remote boxes.
       slim = {
@@ -76,14 +84,12 @@
       };
 
       # `wrappers.neovim.enable = true;` plus any option from nix/module.nix
-      homeModules = {
-        neovim = wrappers.lib.getInstallModule {
-          name = "neovim";
-          value = module;
-        };
-        default = self.homeModules.neovim;
+      nixosModules = {
+        neovim = installModule;
+        default = installModule;
       };
-      nixosModules = self.homeModules;
+      homeModules = self.nixosModules;
+      darwinModules = self.nixosModules;
 
       formatter = forAllSystems (system: (pkgsFor system).nixfmt);
 
