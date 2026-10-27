@@ -87,7 +87,7 @@ return {
         "neogen",
         cmd = "Neogen",
         keys = {
-            { "<leader>doc", "<cmd>Neogen<cr>", desc = "Generate docstring" },
+            { "<leader>cd", "<cmd>Neogen<cr>", desc = "Generate docstring" },
         },
         after = function()
             require("neogen").setup({

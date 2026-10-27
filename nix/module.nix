@@ -168,6 +168,7 @@ in
       lazy = true;
       data = with pkgs.vimPlugins; [
         gitsigns-nvim
+        diffview-plus-nvim
       ];
     };
 
