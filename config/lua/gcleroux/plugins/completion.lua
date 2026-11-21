@@ -1,3 +1,9 @@
+local function hide_in_snippet(cmp)
+    if require("luasnip").locally_jumpable(1) then
+        return cmp.hide()
+    end
+end
+
 local function show_after_word(cmp)
     local col = vim.api.nvim_win_get_cursor(0)[2]
     if col > 0 and not vim.api.nvim_get_current_line():sub(col, col):match("%s") then
@@ -17,7 +23,7 @@ return {
                     preset = "none",
                     ["<Tab>"] = { "select_next", "snippet_forward", show_after_word, "fallback" },
                     ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
-                    ["<CR>"] = { "accept", "fallback" },
+                    ["<CR>"] = { "accept", hide_in_snippet, "fallback" },
                     ["<C-a>"] = { "show" },
                     ["<C-e>"] = { "cancel", "fallback" },
                     ["<C-j>"] = { "scroll_documentation_down", "fallback" },
