@@ -123,9 +123,14 @@ To add a plugin: put it in a spec in `nix/module.nix` (`lazy = true` puts it in
 pack dir — `nvim-cmp`, `comment.nvim`, `oil.nvim`. A new spec also needs its
 name added to the list in `config/lua/gcleroux/plugins/init.lua`.
 
-Disabling a spec (`specs.dap.enable = false`) drops its plugins and binaries
-from the build, and lua skips the matching file, so none of its keymaps or
-commands are left pointing at a missing plugin.
+Disabling a spec drops its plugins and binaries from the build, and lua skips
+the matching file, so none of its keymaps or commands are left pointing at a
+missing plugin. The definition needs a `data` field to be read as a spec
+rather than as a plugin:
+
+```nix
+wrappers.neovim.specs.dap = { enable = false; data = [ ]; };
+```
 
 [lze]: https://github.com/BirdeeHub/lze
 [nix-wrapper-modules]: https://github.com/nix-community/nix-wrapper-modules
