@@ -128,7 +128,6 @@ in
     deps = {
       lazy = true;
       data = with pkgs.vimPlugins; [
-        plenary-nvim
         nvim-web-devicons
         SchemaStore-nvim
         bufdelete-nvim
@@ -185,7 +184,12 @@ in
       lazy = true;
       data = with pkgs.vimPlugins; [
         gitsigns-nvim
-        diffview-plus-nvim
+        {
+          data = diffview-plus-nvim;
+          # nixpkgs still lists plenary as a dependency; diffview-plus no
+          # longer uses it, and installing it would load plenary at startup.
+          pluginDeps = false;
+        }
       ];
     };
 

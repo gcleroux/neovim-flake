@@ -1,7 +1,6 @@
 -- Libraries and plugins with no startup work of their own: they are pulled in
 -- the moment something requires them, or alongside the plugin that needs them.
 return {
-    { "plenary.nvim", on_require = "plenary" },
     { "SchemaStore.nvim", on_require = "schemastore" },
     {
         "bufdelete.nvim",
