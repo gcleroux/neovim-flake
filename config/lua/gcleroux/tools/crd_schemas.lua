@@ -9,7 +9,7 @@ local cache_file = vim.fn.stdpath("cache") .. "/crd_schemas.txt"
 local max_age = 24 * 60 * 60
 
 local function fetch()
-    local result = vim.system({
+    local started, proc = pcall(vim.system, {
         "curl",
         "--fail",
         "--silent",
@@ -20,7 +20,11 @@ local function fetch()
         "--header",
         "Accept: application/vnd.github.v3+json",
         tree_url,
-    }):wait()
+    })
+    if not started then
+        return nil, proc
+    end
+    local result = proc:wait()
     if result.code ~= 0 then
         return nil, vim.trim(result.stderr)
     end
