@@ -4,9 +4,12 @@ return {
     },
     settings = {
         json = {
-            -- SchemaStore.nvim is registered with lze's `on_require` handler
-            schemas = require("schemastore").json.schemas(),
             validate = { enable = true },
         },
     },
+    -- Set in place: the client sends the settings table it was created with,
+    -- so assigning a new config.settings here would never reach the server.
+    before_init = function(_, config)
+        config.settings.json.schemas = require("schemastore").json.schemas()
+    end,
 }
