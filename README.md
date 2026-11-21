@@ -24,6 +24,7 @@ install modules for NixOS, home-manager and nix-darwin.
 | `overlays.default` | adds `pkgs.nvim` |
 | `wrapperModules.default` | the raw module, to compose into your own wrapper |
 | `wrappers.neovim.wrap` | `wrap [ { inherit pkgs; } { settings.withTools = false; } ]` for a one-off variant |
+| `checks.<system>.full`, `checks.<system>.slim` | smoke test for each package, run by `nix flake check`: starts it headless, loads every plugin and fails on any error, missing server or formatter, or broken treesitter query |
 
 ### Installing it
 
@@ -104,6 +105,7 @@ config/            the Neovim config; usable on its own, no Nix required
 nix/
   module.nix         the whole wrapper: one spec per area, each carrying its
                      plugins, the binaries they call, and whether they are lazy
+  smoke.lua          the smoke test behind `nix flake check`
 ```
 
 ## Lazy loading

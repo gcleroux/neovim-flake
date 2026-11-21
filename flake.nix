@@ -104,6 +104,31 @@
 
       formatter = forAllSystems (system: (pkgsFor system).nixfmt);
 
+      # `nix flake check` starts each package headless, loads every plugin and
+      # fails on any error; see nix/smoke.lua.
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = pkgsFor system;
+          smoke =
+            name: env:
+            pkgs.runCommand "smoke-${name}" env ''
+              export HOME=$(mktemp -d)
+              if ! timeout 300 ${self.packages.${system}.${name}}/bin/nvim --headless \
+                --cmd 'luafile ${./nix/smoke.lua}' -c 'lua _G.smoke()' > report; then
+                cat report
+                exit 1
+              fi
+              cat report
+              mv report $out
+            '';
+        in
+        {
+          full = smoke "full" { SMOKE_TOOLS = "1"; };
+          slim = smoke "slim" { };
+        }
+      );
+
       devShells = forAllSystems (
         system:
         let
