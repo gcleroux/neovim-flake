@@ -1,161 +1,56 @@
--- Completion stack. nvim-cmp and luasnip both come up on the first insert;
--- the cmp sources and friendly-snippets ride along as dependencies.
-
-local kind_icons = {
-    Text = "",
-    Method = "󰆧",
-    Function = "󰊕",
-    Constructor = "",
-    Field = "󰇽",
-    Variable = "󰂡",
-    Class = "󰠱",
-    Interface = "",
-    Module = "",
-    Property = "󰜢",
-    Unit = "",
-    Value = "󰎠",
-    Enum = "",
-    Keyword = "󰌋",
-    Snippet = "",
-    Color = "󰏘",
-    File = "󰈙",
-    Reference = "",
-    Folder = "󰉋",
-    EnumMember = "",
-    Constant = "󰏿",
-    Struct = "",
-    Event = "",
-    Operator = "󰆕",
-    TypeParameter = "󰅲",
-}
-
--- From: https://github.com/VonHeikemen/lsp-zero.nvim/blob/d388e2b71834c826e61a3eba48caec53d7602510/lua/lsp-zero/cmp-mapping.lua#L221-L265
----If the completion menu is visible it will navigate to the next item in
----the list. If cursor is on top of the trigger of a snippet it'll expand
----it. If the cursor can jump to a luasnip placeholder, it moves to it.
----If the cursor is in the middle of a word that doesn't trigger a snippet
----it displays the completion menu. Else, it uses the fallback.
-local function luasnip_supertab(cmp, luasnip, select_opts)
-    return cmp.mapping(function(fallback)
-        local col = vim.fn.col(".") - 1
-
-        if cmp.visible() then
-            cmp.select_next_item(select_opts)
-        elseif luasnip.expand_or_locally_jumpable() then
-            luasnip.expand_or_jump()
-        elseif col == 0 or vim.fn.getline("."):sub(col, col):match("%s") then
-            fallback()
-        else
-            cmp.complete()
-        end
-    end, { "i", "s" })
-end
-
----If the completion menu is visible it will navigate to previous item in the
----list. If the cursor can navigate to a previous snippet placeholder, it
----moves to it. Else, it uses the fallback.
-local function luasnip_shift_supertab(cmp, luasnip, select_opts)
-    return cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_prev_item(select_opts)
-        elseif luasnip.locally_jumpable(-1) then
-            luasnip.jump(-1)
-        else
-            fallback()
-        end
-    end, { "i", "s" })
+local function show_after_word(cmp)
+    local col = vim.api.nvim_win_get_cursor(0)[2]
+    if col > 0 and not vim.api.nvim_get_current_line():sub(col, col):match("%s") then
+        return cmp.show()
+    end
 end
 
 return {
     {
-        "nvim-cmp",
-        event = "InsertEnter",
+        "blink.cmp",
+        -- setup() finishes asynchronously, so loading it on InsertEnter would
+        -- drop the first keys typed.
+        event = "DeferredUIEnter",
         after = function()
-            local cmp = require("cmp")
-
-            -- cmp is on the runtimepath now, so its sources can register.
-            -- Taken from what is actually installed rather than a list to
-            -- keep in sync: adding a cmp-* plugin in nix/module.nix and a
-            -- spec below is enough.
-            local sources = {}
-            for name in pairs(-require("lze").state) do
-                if name ~= "nvim-cmp" and name:match("^cmp[-_]") then
-                    table.insert(sources, name)
-                end
-            end
-            require("lze").trigger_load(sources)
-
-            -- cmp-nvim-lsp registers its source from its own InsertEnter
-            -- autocmd, which it only creates now, so it misses the very
-            -- InsertEnter that got us here. Run it once by hand, otherwise
-            -- LSP completion is missing until the second time you insert.
-            pcall(vim.api.nvim_exec_autocmds, "InsertEnter", { group = "cmp_nvim_lsp" })
-
-            local luasnip = require("luasnip")
-
-            cmp.setup({
-                snippet = {
-                    expand = function(args)
-                        luasnip.lsp_expand(args.body) -- For `luasnip` users.
-                    end,
+            require("blink.cmp").setup({
+                keymap = {
+                    preset = "none",
+                    ["<Tab>"] = { "select_next", "snippet_forward", show_after_word, "fallback" },
+                    ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+                    ["<CR>"] = { "accept", "fallback" },
+                    ["<C-a>"] = { "show" },
+                    ["<C-e>"] = { "cancel", "fallback" },
+                    ["<C-j>"] = { "scroll_documentation_down", "fallback" },
+                    ["<C-k>"] = { "scroll_documentation_up", "fallback" },
                 },
-                mapping = {
-                    ["<Tab>"] = luasnip_supertab(cmp, luasnip),
-                    ["<S-Tab>"] = luasnip_shift_supertab(cmp, luasnip),
-                    ["<CR>"] = cmp.mapping.confirm({ select = false }),
-
-                    ["<C-a>"] = cmp.mapping.complete(), -- Every cmp entry
-                    ["<C-e>"] = cmp.mapping.abort(),
-
-                    ["<C-j>"] = cmp.mapping.scroll_docs(4),
-                    ["<C-k>"] = cmp.mapping.scroll_docs(-4),
+                completion = {
+                    list = { selection = { preselect = false } },
+                    documentation = { auto_show = true },
+                    menu = {
+                        draw = {
+                            columns = {
+                                { "label", "label_description", gap = 1 },
+                                { "kind_icon", "kind", gap = 1 },
+                                { "source_name" },
+                            },
+                        },
+                    },
                 },
-                formatting = {
-                    format = function(entry, vim_item)
-                        -- Kind icons
-                        vim_item.kind = string.format("%s %s", kind_icons[vim_item.kind], vim_item.kind)
-                        vim_item.menu = ({
-                            nvim_lsp = "[LSP]",
-                            luasnip = "[Snippet]",
-                            buffer = "[Buffer]",
-                            path = "[Path]",
-                            emoji = "", -- No need for emoji menu identifier
-                        })[entry.source.name]
-                        return vim_item
-                    end,
-                },
+                snippets = { preset = "luasnip" },
                 sources = {
-                    { name = "nvim_lsp" },
-                    { name = "luasnip" },
-                    { name = "buffer" },
-                    { name = "path" },
-                    { name = "emoji" },
+                    default = { "lsp", "snippets", "buffer", "path", "emoji" },
+                    providers = {
+                        emoji = { name = "Emoji", module = "blink-emoji" },
+                    },
                 },
-                windowdocumentation = {
-                    border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-                },
-                experimental = {
-                    ghost_text = false,
-                },
+                cmdline = { enabled = false },
             })
         end,
     },
-
-    -- Sources register themselves from after/plugin with
-    -- `require("cmp").register_source`, so cmp has to be on the runtimepath
-    -- before they load. Neither dep_of (loads before) nor on_plugin (fires
-    -- while the parent is still loading) guarantees that, so nvim-cmp's own
-    -- after hook loads them once it is up.
-    { "cmp-nvim-lsp", lazy = true },
-    { "cmp-buffer", lazy = true },
-    { "cmp-path", lazy = true },
-    { "cmp-emoji", lazy = true },
-    { "cmp_luasnip", lazy = true },
+    { "blink-emoji.nvim", on_require = "blink-emoji" },
 
     {
         "luasnip",
-        -- Needed by nvim-cmp, but also useful on its own
-        dep_of = "nvim-cmp",
         event = "InsertEnter",
         on_require = "luasnip",
         after = function()
@@ -213,11 +108,6 @@ return {
                     highlight_grey = "LineNr",
                 },
             })
-
-            -- Hook into cmp's confirm_done; make sure cmp is up first, as both
-            -- are triggered by the same InsertEnter event.
-            require("lze").trigger_load("nvim-cmp")
-            require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
         end,
     },
 }

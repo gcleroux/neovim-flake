@@ -24,16 +24,7 @@
         "x86_64-linux"
       ];
       forAllSystems = nixpkgs.lib.genAttrs systems;
-
-      # cmp-emoji ships an unfree emoji dataset; allow that one package so the
-      # flake builds on a stock nixpkgs. Consumers that pass their own pkgs
-      # (the install modules, the overlay) are unaffected.
-      pkgsFor =
-        system:
-        import nixpkgs {
-          inherit system;
-          config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [ "cmp-emoji" ];
-        };
+      pkgsFor = system: nixpkgs.legacyPackages.${system};
 
       module = ./nix/module.nix;
       wrapper = (wrappers.lib.evalModule module).config;

@@ -119,12 +119,8 @@ in
     completion = {
       lazy = true;
       data = with pkgs.vimPlugins; [
-        nvim-cmp
-        cmp-nvim-lsp
-        cmp-buffer
-        cmp-path
-        cmp-emoji
-        cmp_luasnip
+        blink-cmp
+        blink-emoji-nvim
         luasnip
         friendly-snippets
         nvim-autopairs
@@ -221,7 +217,6 @@ in
         nvim-dap
         nvim-dap-ui
         nvim-dap-virtual-text
-        cmp-dap
       ];
       runtimePkgs = [ pkgs.delve ];
     };
