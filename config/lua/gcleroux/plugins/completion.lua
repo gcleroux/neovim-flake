@@ -70,23 +70,20 @@ return {
                 paths = vim.api.nvim_get_runtime_file("luasnippets", true),
             })
 
-            -- Clears the snippet buffer when leaving snippet mode
-            -- This prevents the cursor from jumping to previously exited snippets
-            -- that weren't completed
-            local function leave_snippet()
-                if
-                    ((vim.v.event.old_mode == "s" and vim.v.event.new_mode == "n") or vim.v.event.old_mode == "i")
-                    and luasnip.session.current_nodes[vim.api.nvim_get_current_buf()]
-                    and not luasnip.session.jump_active
-                then
-                    luasnip.unlink_current()
-                end
-            end
-
-            -- stop snippets when you leave to normal mode
+            -- Leaving to normal mode ends the snippet, so <Tab> cannot later jump
+            -- back into one that was abandoned halfway. Only normal mode: accepting
+            -- a completion passes through the ic/ix submodes inside the snippet.
             vim.api.nvim_create_autocmd("ModeChanged", {
                 group = vim.api.nvim_create_augroup("luasnip_leave", { clear = true }),
-                callback = leave_snippet,
+                pattern = "*:n",
+                callback = function()
+                    if
+                        luasnip.session.current_nodes[vim.api.nvim_get_current_buf()]
+                        and not luasnip.session.jump_active
+                    then
+                        luasnip.unlink_current()
+                    end
+                end,
             })
         end,
     },
