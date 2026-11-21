@@ -33,6 +33,8 @@ end
 return {
     settings = {
         yaml = {
+            -- The oldest cluster managed; bump it when that cluster is upgraded.
+            kubernetesVersion = "1.34.1",
             schemas = {
                 ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
                 ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
