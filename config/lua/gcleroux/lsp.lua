@@ -1,6 +1,5 @@
 local settings = require("gcleroux.settings")
 
--- Diagnostics
 vim.diagnostic.config({
     signs = {
         text = {
@@ -11,59 +10,52 @@ vim.diagnostic.config({
         },
     },
     update_in_insert = true,
-    underline = true,
     severity_sort = true,
     float = {
         focusable = false,
         style = "minimal",
         border = "single",
-        source = "always",
+        source = true,
         header = "",
         prefix = "",
         suffix = "",
     },
 })
 
--- Disable default keybinds
-for _, bind in ipairs({ "grn", "gra", "gri", "grr", "grt" }) do
-    pcall(vim.keymap.del, "n", bind)
+-- `gr` is mapped to references below; any default gr* mapping would make it
+-- wait for 'timeoutlen'.
+for _, m in ipairs(vim.api.nvim_get_keymap("n")) do
+    if m.lhs:match("^gr.") then
+        vim.keymap.del("n", m.lhs)
+    end
 end
 
--- Create keybindings, commands, inlay hints and autocommands on LSP attach
 vim.api.nvim_create_autocmd("LspAttach", {
+    group = vim.api.nvim_create_augroup("gcleroux_lsp", { clear = true }),
     callback = function(ev)
-        local bufnr = ev.buf
         local client = vim.lsp.get_client_by_id(ev.data.client_id)
-        if not client then
-            return
-        end
-        if client.server_capabilities.completionProvider then
-            vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
-        end
-        if client.server_capabilities.definitionProvider then
-            vim.bo[bufnr].tagfunc = "v:lua.vim.lsp.tagfunc"
+        if client then
+            client.server_capabilities.semanticTokensProvider = nil
         end
 
-        --- Disable semantic tokens
-        client.server_capabilities.semanticTokensProvider = nil
+        local function map(mode, lhs, rhs, desc)
+            vim.keymap.set(mode, lhs, rhs, { buffer = ev.buf, desc = desc })
+        end
 
-        -- All the keymaps
-        -- stylua: ignore start
-        local opts = { buffer = bufnr, remap = false, silent = true }
-
-        vim.keymap.set("n", "gd", "<cmd>FzfLua lsp_definitions<CR>", opts)
-        vim.keymap.set("n", "gi", "<cmd>FzfLua lsp_implementations<CR>", opts)
-        vim.keymap.set("n", "gr", "<cmd>FzfLua lsp_references<CR>", opts)
-        vim.keymap.set({ "n", "v" }, "<leader>ca", "<cmd>FzfLua lsp_code_actions<CR>", opts)
-
-        vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-        vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-        vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-        vim.keymap.set("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-        vim.keymap.set("n", "gl", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-        vim.keymap.set("n", "[d", '<cmd>lua vim.diagnostic.goto_prev({ border = "rounded" })<CR>', opts)
-        vim.keymap.set("n", "]d", '<cmd>lua vim.diagnostic.goto_next({ border = "rounded" })<CR>', opts)
-        -- stylua: ignore end
+        map("n", "gd", "<cmd>FzfLua lsp_definitions<CR>", "Go to definition")
+        map("n", "gi", "<cmd>FzfLua lsp_implementations<CR>", "Go to implementation")
+        map("n", "gr", "<cmd>FzfLua lsp_references<CR>", "List references")
+        map({ "n", "v" }, "<leader>ca", "<cmd>FzfLua lsp_code_actions<CR>", "Code actions")
+        map("n", "gD", vim.lsp.buf.declaration, "Go to declaration")
+        map("n", "gs", vim.lsp.buf.signature_help, "Signature help")
+        map("n", "<leader>rn", vim.lsp.buf.rename, "Rename symbol")
+        map("n", "gl", vim.diagnostic.open_float, "Show line diagnostics")
+        map("n", "[d", function()
+            vim.diagnostic.jump({ count = -1, float = true })
+        end, "Previous diagnostic")
+        map("n", "]d", function()
+            vim.diagnostic.jump({ count = 1, float = true })
+        end, "Next diagnostic")
     end,
 })
 

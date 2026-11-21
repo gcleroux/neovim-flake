@@ -83,41 +83,71 @@ local function configure_go(dap)
     }
 end
 
--- lhs -> dap function
-local keymaps = {
-    ["<F5>"] = function()
-        require("dap").continue()
-    end,
-    ["<F10>"] = function()
-        require("dap").step_over()
-    end,
-    ["<F11>"] = function()
-        require("dap").step_into()
-    end,
-    ["<F12>"] = function()
-        require("dap").step_out()
-    end,
-    ["<leader>b"] = function()
-        require("dap").toggle_breakpoint()
-    end,
-    ["<leader>B"] = function()
-        require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-    end,
-    ["<leader>lp"] = function()
-        require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-    end,
-    ["<leader>dbg"] = function()
-        require("dap").repl.open()
-    end,
-    ["<leader>rl"] = function()
-        require("dap").run_last()
-    end,
+local keys = {
+    {
+        "<F5>",
+        function()
+            require("dap").continue()
+        end,
+        desc = "Debug: continue",
+    },
+    {
+        "<F10>",
+        function()
+            require("dap").step_over()
+        end,
+        desc = "Debug: step over",
+    },
+    {
+        "<F11>",
+        function()
+            require("dap").step_into()
+        end,
+        desc = "Debug: step into",
+    },
+    {
+        "<F12>",
+        function()
+            require("dap").step_out()
+        end,
+        desc = "Debug: step out",
+    },
+    {
+        "<leader>b",
+        function()
+            require("dap").toggle_breakpoint()
+        end,
+        desc = "Debug: toggle breakpoint",
+    },
+    {
+        "<leader>B",
+        function()
+            require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
+        end,
+        desc = "Debug: conditional breakpoint",
+    },
+    {
+        "<leader>lp",
+        function()
+            require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+        end,
+        desc = "Debug: log point",
+    },
+    {
+        "<leader>dbg",
+        function()
+            require("dap").repl.open()
+        end,
+        desc = "Debug: open REPL",
+    },
+    {
+        "<leader>rl",
+        function()
+            require("dap").run_last()
+        end,
+        desc = "Debug: run last",
+    },
 }
-
-local keys = {}
-for lhs, rhs in pairs(keymaps) do
-    table.insert(keys, { lhs, rhs, mode = "n" })
-end
 
 return {
     {

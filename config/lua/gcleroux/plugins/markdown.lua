@@ -1,7 +1,7 @@
 return {
     {
         "render-markdown.nvim",
-        ft = { "markdown", "codecompanion", "Avante" },
+        ft = "markdown",
         after = function()
             require("render-markdown").setup({})
         end,

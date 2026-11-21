@@ -7,52 +7,22 @@ return {
         after = function()
             require("gitsigns").setup({
                 signs = {
-                    add = { text = "┃" },
-                    change = { text = "┃" },
                     delete = { text = "_" },
                     topdelete = { text = "‾" },
-                    changedelete = { text = "~" },
-                    untracked = { text = "┆" },
-                },
-                signcolumn = true, -- Toggle with `:Gitsigns toggle_signs`
-                numhl = false, -- Toggle with `:Gitsigns toggle_numhl`
-                linehl = false, -- Toggle with `:Gitsigns toggle_linehl`
-                word_diff = false, -- Toggle with `:Gitsigns toggle_word_diff`
-                watch_gitdir = {
-                    interval = 1000,
-                    follow_files = true,
                 },
                 attach_to_untracked = true,
-                current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
-                current_line_blame_opts = {
-                    virt_text = true,
-                    virt_text_pos = "eol", -- 'eol' | 'overlay' | 'right_align'
-                    delay = 1000,
-                    ignore_whitespace = false,
-                },
                 current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
-                sign_priority = 6,
-                update_debounce = 100,
-                status_formatter = nil, -- Use default
-                max_file_length = 40000, -- Disable if file is longer than this (in lines)
-                preview_config = {
-                    -- Options passed to nvim_open_win
-                    border = "single",
-                    style = "minimal",
-                    relative = "cursor",
-                    row = 0,
-                    col = 1,
-                },
+                preview_config = { border = "single" },
             })
 
-            local keymap = function(lhs, rhs)
-                vim.keymap.set("n", lhs, rhs, { noremap = true, silent = true })
+            local function map(lhs, rhs, desc)
+                vim.keymap.set("n", lhs, rhs, { desc = desc })
             end
 
-            keymap("<leader>hr", ":Gitsigns reset_hunk<CR>")
-            keymap("<leader>hp", ":Gitsigns preview_hunk<CR>")
-            keymap("<leader>hn", ":Gitsigns next_hunk<CR>")
-            keymap("<leader>hb", ":Gitsigns prev_hunk<CR>")
+            map("<leader>hr", "<cmd>Gitsigns reset_hunk<CR>", "Reset hunk")
+            map("<leader>hp", "<cmd>Gitsigns preview_hunk<CR>", "Preview hunk")
+            map("<leader>hn", "<cmd>Gitsigns nav_hunk next<CR>", "Next hunk")
+            map("<leader>hb", "<cmd>Gitsigns nav_hunk prev<CR>", "Previous hunk")
         end,
     },
 
@@ -93,16 +63,10 @@ return {
             },
         },
         after = function()
-            -- Defaults are kept for everything not listed; `g?` inside any
-            -- diffview buffer lists the mappings. See :h diffview.defaults
             require("diffview").setup({
                 enhanced_diff_hl = true,
                 view = {
                     merge_tool = { layout = "diff3_mixed" },
-                },
-                file_panel = {
-                    listing_style = "tree",
-                    win_config = { position = "left", width = 35 },
                 },
                 keymaps = {
                     view = {
