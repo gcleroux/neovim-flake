@@ -14,7 +14,7 @@ local function get_latest_sha()
     )
     if response.status ~= 200 then
         vim.notify("Failed to fetch SHA (HTTP " .. response.status .. ")", vim.log.levels.ERROR)
-        return {}
+        return nil
     end
     local data = vim.fn.json_decode(response.body)
     return data and data.commit and data.commit.sha or nil
@@ -92,7 +92,7 @@ function M.insert_modeline()
                 local modeline = "# yaml-language-server: $schema=" .. schema_url
 
                 local row, _ = unpack(vim.api.nvim_win_get_cursor(0))
-                -- Insert at top of current buffer
+                -- Insert above the cursor line
                 vim.api.nvim_buf_set_lines(0, row - 1, row - 1, false, { modeline })
             end,
         },
