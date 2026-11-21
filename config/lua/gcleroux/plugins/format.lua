@@ -32,7 +32,7 @@ return {
                     markdown = { "markdownlint", "prettierd" },
                     nix = { "nixfmt" },
                     proto = { "buf" },
-                    python = { "ruff_fix", "ruff_format", "isort" },
+                    python = { "ruff_fix", "ruff_format", "ruff_organize_imports" },
                     sh = { "shfmt" },
                     typescript = { "prettierd" },
                     yaml = { "prettierd" },

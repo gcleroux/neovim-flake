@@ -20,7 +20,6 @@ return {
                 sh = { "shellcheck" },
                 env = { "dotenv_linter" },
                 typescript = { "biomejs" },
-                -- yaml = { "yamllint", "actionlint" },
             }
 
             -- use for codespell for all except bib and css

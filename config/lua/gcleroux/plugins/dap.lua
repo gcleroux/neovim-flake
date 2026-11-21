@@ -8,7 +8,7 @@ local function executable(cmd)
 end
 
 local function configure_python(dap)
-    local command = os.getenv("HOME") .. "/.virtualenvs/debugpy/bin/python"
+    local command = "debugpy-adapter"
     if not executable(command) then
         return
     end
@@ -16,7 +16,6 @@ local function configure_python(dap)
     dap.adapters.python = {
         type = "executable",
         command = command,
-        args = { "-m", "debugpy.adapter" },
     }
 
     dap.configurations.python = {
@@ -36,9 +35,10 @@ local function configure_python(dap)
                     return cwd .. "/venv/bin/python"
                 elseif vim.fn.executable(cwd .. "/.venv/bin/python") == 1 then
                     return cwd .. "/.venv/bin/python"
-                else
-                    return vim.fn.exepath("python3")
                 end
+                -- nil lets debugpy run the program with its own interpreter
+                local python3 = vim.fn.exepath("python3")
+                return python3 ~= "" and python3 or nil
             end,
         },
     }

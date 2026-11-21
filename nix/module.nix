@@ -39,7 +39,7 @@ in
         dockerls = pkgs.dockerfile-language-server;
         gopls = pkgs.gopls;
         html = pkgs.vscode-langservers-extracted;
-        jedi_language_server = pkgs.python313Packages.jedi-language-server;
+        jedi_language_server = pkgs.python3Packages.jedi-language-server;
         jsonls = pkgs.vscode-langservers-extracted;
         lua_ls = pkgs.lua-language-server;
         marksman = pkgs.marksman;
@@ -193,20 +193,15 @@ in
       lazy = true;
       data = [ pkgs.vimPlugins.conform-nvim ];
       runtimePkgs = with pkgs; [
-        cbfmt
         gofumpt
         goimports-reviser
         gotools # goimports
-        isort
         markdownlint-cli
         nixfmt
         prettierd
         ruff
         shfmt
         stylua
-
-        # Runtime some of them need
-        nodejs-slim
       ];
     };
 
@@ -214,7 +209,6 @@ in
       lazy = true;
       data = [ pkgs.vimPlugins.nvim-lint ];
       runtimePkgs = with pkgs; [
-        actionlint
         biome
         buf
         codespell
@@ -226,7 +220,6 @@ in
         proselint
         shellcheck
         statix
-        yamllint
       ];
     };
 
@@ -237,7 +230,10 @@ in
         nvim-dap-ui
         nvim-dap-virtual-text
       ];
-      runtimePkgs = [ pkgs.delve ];
+      runtimePkgs = with pkgs; [
+        delve
+        python3Packages.debugpy
+      ];
     };
 
     markdown = {
