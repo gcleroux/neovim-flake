@@ -148,7 +148,6 @@ in
     editing = {
       lazy = true;
       data = with pkgs.vimPlugins; [
-        comment-nvim
         nvim-surround
         neogen
         nvim-treesitter-textobjects

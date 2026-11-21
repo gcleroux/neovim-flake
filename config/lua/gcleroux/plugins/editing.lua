@@ -31,22 +31,6 @@ end
 
 return {
     {
-        "comment.nvim",
-        keys = {
-            { "<C-/>", mode = { "n", "v" } },
-            { "gc", mode = { "n", "v" } },
-            { "gb", mode = { "n", "v" } },
-        },
-        after = function()
-            require("Comment").setup({
-                toggler = { line = "<C-/>" },
-                opleader = { line = "<C-/>" },
-                mappings = { extra = false },
-            })
-        end,
-    },
-
-    {
         "nvim-surround",
         keys = {
             { "ys", mode = "n" },

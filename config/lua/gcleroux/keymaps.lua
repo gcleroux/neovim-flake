@@ -16,4 +16,7 @@ map("x", "p", '"_dP', { desc = "Paste over selection without yanking it" })
 map("x", "<A-j>", ":move '>+1<CR>gv-gv", { silent = true, desc = "Move selection down" })
 map("x", "<A-k>", ":move '<-2<CR>gv-gv", { silent = true, desc = "Move selection up" })
 
+map("n", "<C-/>", "gcc", { remap = true, desc = "Toggle comment on line" })
+map("x", "<C-/>", "gc", { remap = true, desc = "Toggle comment on selection" })
+
 map("n", "<leader>L", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })

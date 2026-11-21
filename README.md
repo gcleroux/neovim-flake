@@ -122,7 +122,7 @@ are enabled on `DeferredUIEnter`, after the first draw.
 To add a plugin: put it in a spec in `nix/module.nix` (`lazy = true` puts it in
 `pack/*/opt`), then add its lze spec to the file of the same name in
 `config/lua/gcleroux/plugins/`. Its name there is the plugin's directory name in the
-pack dir — `blink.cmp`, `comment.nvim`, `oil.nvim`. A new spec also needs its
+pack dir — `blink.cmp`, `gitsigns.nvim`, `oil.nvim`. A new spec also needs its
 name added to the list in `config/lua/gcleroux/plugins/init.lua`.
 
 Disabling a spec drops its plugins and binaries from the build, and lua skips
