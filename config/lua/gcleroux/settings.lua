@@ -12,7 +12,7 @@ local defaults = {
         servers = {},
     },
 
-    -- Expressions for `gcleroux/lsp/servers/nixd.lua`: which flake to evaluate for
+    -- Expressions for `after/lsp/nixd.lua`: which flake to evaluate for
     -- NixOS and home-manager option completion. Deployment specific.
     ---@type { nixpkgs: string?, nixos: string?, home_manager: string? }?
     nixd = nil,

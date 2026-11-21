@@ -1,27 +1,7 @@
--- Anything that needs a real file open: language servers, formatters,
--- linters. `vim.lsp.enable()` re-runs the FileType autocmds for buffers that
--- are already open, so attaching from BufReadPost is not too late.
-
--- Loading a plugin from inside a BufReadPost autocmd stops neovim's own
--- filetype detection from running for that buffer: the file opens with no
--- filetype, so no treesitter and no LSP. Only the first file is affected,
--- since after that these are loaded and the trigger is gone. Load them once
--- the UI is up instead; vim.lsp.enable re-runs FileType for open buffers.
-local load_event = "DeferredUIEnter"
-
 return {
     {
-        "nvim-lspconfig",
-        event = load_event,
-        after = function()
-            -- Diagnostics, LspAttach keymaps and `vim.lsp.enable()` per server
-            require("gcleroux.lsp")
-        end,
-    },
-
-    {
         "conform.nvim",
-        event = load_event,
+        event = "DeferredUIEnter",
         cmd = "ConformInfo",
         on_require = "conform",
         after = function()
@@ -67,7 +47,7 @@ return {
 
     {
         "nvim-lint",
-        event = load_event,
+        event = "DeferredUIEnter",
         after = function()
             local lint = require("lint")
 

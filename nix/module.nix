@@ -91,7 +91,8 @@ in
 
   config.specs = {
     # Not lazy: the loader, highlighting (must be up before the first draw),
-    # rainbow-delimiters (hooks FileType at startup) and the colorscheme.
+    # rainbow-delimiters (hooks FileType at startup), the colorscheme and the
+    # lspconfig server definitions `vim.lsp.enable()` reads at startup.
     startup = {
       lazy = false;
       data = with pkgs.vimPlugins; [
@@ -99,6 +100,7 @@ in
         nvim-treesitter.withAllGrammars
         rainbow-delimiters-nvim
         nightfox-nvim
+        nvim-lspconfig
       ];
     };
 
@@ -175,7 +177,6 @@ in
     lsp = {
       lazy = true;
       data = with pkgs.vimPlugins; [
-        nvim-lspconfig
         conform-nvim
         nvim-lint
       ];

@@ -1,10 +1,3 @@
--- LSP setup.
---
--- Which servers are enabled is decided at build time (nix/servers.nix), so a
--- build without a given language server never tries to start it. Servers that
--- need more than the lspconfig defaults get a `lua/lsp/servers/<name>.lua`
--- returning a config table.
-
 local settings = require("gcleroux.settings")
 
 -- Diagnostics
@@ -74,19 +67,4 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end,
 })
 
--- Per-server overrides, when the file exists
-local function server_config(name)
-    local mod = "gcleroux.lsp.servers." .. name
-    if #vim.api.nvim_get_runtime_file("lua/" .. mod:gsub("%.", "/") .. ".lua", false) == 0 then
-        return nil
-    end
-    return require(mod)
-end
-
-for _, name in ipairs(settings.lsp.servers) do
-    local config = server_config(name)
-    if config then
-        vim.lsp.config(name, config)
-    end
-    vim.lsp.enable(name)
-end
+vim.lsp.enable(settings.lsp.servers)
