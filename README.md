@@ -115,7 +115,8 @@ up), `InsertEnter`, `ft`, `cmd`, `keys`, `on_require` (any
 A handful of plugins stay eager on purpose: `lze` itself, the colorscheme,
 `nvim-treesitter` (highlighting has to be up before the first draw),
 `rainbow-delimiters` (it hooks `FileType` at startup) and `nvim-lspconfig`
-(only server definitions, read by `vim.lsp.enable()`).
+(only server definitions, read by `vim.lsp.enable()`). The servers themselves
+are enabled on `DeferredUIEnter`, after the first draw.
 
 To add a plugin: put it in a spec in `nix/module.nix` (`lazy = true` puts it in
 `pack/*/opt`), then add its lze spec to the file of the same name in
