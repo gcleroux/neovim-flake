@@ -112,9 +112,6 @@ return {
                             vim.keymap.set("n", "q", "<cmd>close<CR>", { buffer = term.bufnr, desc = "Close terminal" })
                         end
                     end,
-                    on_close = function()
-                        vim.cmd("startinsert!")
-                    end,
                 })
 
                 vim.keymap.set("n", lhs, function()
