@@ -265,6 +265,7 @@ in
     # Without these the config is visibly broken, so they are never dropped
     (with pkgs; [
       bat # fzf-lua previewer
+      curl # :InsertCRDSchema
       fd # fzf-lua file finder
       gitMinimal # gitsigns, the lazygit terminal
       ripgrep # fzf-lua live grep
