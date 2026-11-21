@@ -19,7 +19,7 @@ install modules for NixOS, home-manager and nix-darwin.
 | output | what it is |
 | --- | --- |
 | `packages.<system>.full` (`default`) | everything: plugins, language servers, formatters, linters, debug tooling |
-| `packages.<system>.slim` | same config and plugins, no servers and no tooling beyond `bat`/`fd`/`git`/`ripgrep` — for remote boxes |
+| `packages.<system>.slim` | same config and plugins, no servers, no tooling beyond `bat`/`fd`/`git`/`ripgrep` and a short list of treesitter grammars — for remote boxes |
 | `nixosModules.default`, `homeModules.default`, `darwinModules.default` | one module under three names: `wrappers.neovim.enable = true;` plus every option in `nix/module.nix` |
 | `overlays.default` | adds `pkgs.nvim` |
 | `wrapperModules.default` | the raw module, to compose into your own wrapper |
@@ -81,6 +81,7 @@ wrappers.neovim = {
   enable = true;
   settings.withTools = false;                        # drop formatters/linters
   settings.servers = { inherit (pkgs) gopls nixd; }; # keep just these two
+  settings.grammars = [ "go" "nix" ];                # and their grammars
 };
 ```
 ## Layout

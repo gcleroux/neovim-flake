@@ -42,6 +42,26 @@
       slim = {
         settings.withTools = false;
         settings.servers = { };
+        settings.grammars = [
+          "bash"
+          "diff"
+          "dockerfile"
+          "git_config"
+          "gitcommit"
+          "ini"
+          "json"
+          "lua"
+          "make"
+          "markdown"
+          "markdown_inline"
+          "nix"
+          "python"
+          "query"
+          "toml"
+          "vim"
+          "vimdoc"
+          "yaml"
+        ];
       };
     in
     {

@@ -66,6 +66,20 @@ in
         flake to evaluate is deployment specific, so it is left unset here.
       '';
     };
+
+    grammars = mkOption {
+      type = types.nullOr (types.listOf types.str);
+      default = null;
+      example = [
+        "bash"
+        "nix"
+        "yaml"
+      ];
+      description = ''
+        Treesitter grammars to ship, by nvim-treesitter name. `null` ships all
+        of them, which is about half of the slim closure.
+      '';
+    };
   };
 
   # The only things lua cannot work out for itself: which specs and servers
@@ -93,12 +107,17 @@ in
   config.specs = {
     # Not lazy: the loader, highlighting (must be up before the first draw),
     # rainbow-delimiters (hooks FileType at startup), the colorscheme and the
-    # lspconfig server definitions `vim.lsp.enable()` reads at startup.
+    # lspconfig server definitions `vim.lsp.enable()` reads.
     startup = {
       lazy = false;
       data = with pkgs.vimPlugins; [
         lze
-        nvim-treesitter.withAllGrammars
+        (
+          if cfg.grammars == null then
+            nvim-treesitter.withAllGrammars
+          else
+            nvim-treesitter.withPlugins (p: map (name: p.${name}) cfg.grammars)
+        )
         rainbow-delimiters-nvim
         nightfox-nvim
         nvim-lspconfig
