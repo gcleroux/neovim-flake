@@ -93,7 +93,8 @@ return {
         "nvim-autopairs",
         event = "InsertEnter",
         after = function()
-            require("nvim-autopairs").setup({
+            local npairs = require("nvim-autopairs")
+            npairs.setup({
                 check_ts = true,
                 ts_config = {
                     lua = { "string", "source" },
@@ -104,6 +105,10 @@ return {
                     highlight_grey = "LineNr",
                 },
             })
+
+            for _, pair in ipairs({ '"', "'", "`" }) do
+                npairs.remove_rule(pair)
+            end
         end,
     },
 }
