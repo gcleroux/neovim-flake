@@ -68,11 +68,12 @@ in
     };
   };
 
-  # The only things lua cannot work out for itself: which servers this build
-  # ships, and which flake nixd should evaluate.
+  # The only things lua cannot work out for itself: which specs and servers
+  # this build ships, and which flake nixd should evaluate.
   config.info.nvim = {
     inherit (cfg) nixd;
     lsp.servers = lib.attrNames cfg.servers;
+    specs = builtins.mapAttrs (_: spec: spec.enable) config.specs;
   };
 
   # No language providers; nothing in the config uses them and each one drags
@@ -174,14 +175,10 @@ in
       ];
     };
 
-    lsp = {
+    format = {
       lazy = true;
-      data = with pkgs.vimPlugins; [
-        conform-nvim
-        nvim-lint
-      ];
+      data = [ pkgs.vimPlugins.conform-nvim ];
       runtimePkgs = with pkgs; [
-        # Formatters
         cbfmt
         gofumpt
         goimports-reviser
@@ -194,7 +191,15 @@ in
         shfmt
         stylua
 
-        # Linters
+        # Runtime some of them need
+        nodejs-slim
+      ];
+    };
+
+    lint = {
+      lazy = true;
+      data = [ pkgs.vimPlugins.nvim-lint ];
+      runtimePkgs = with pkgs; [
         actionlint
         biome
         buf
@@ -208,9 +213,6 @@ in
         shellcheck
         statix
         yamllint
-
-        # Runtime some of them need
-        nodejs-slim
       ];
     };
 

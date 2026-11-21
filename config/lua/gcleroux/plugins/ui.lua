@@ -117,6 +117,7 @@ return {
 
     {
         "oil.nvim",
+        lazy = not (vim.fn.argc(-1) == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1),
         cmd = "Oil",
         on_require = "oil",
         keys = {

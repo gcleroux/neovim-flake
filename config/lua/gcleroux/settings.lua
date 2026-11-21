@@ -1,4 +1,4 @@
--- The two things the lua config cannot work out for itself.
+-- What the lua config cannot work out for itself.
 --
 -- The wrapper generates an info plugin holding whatever the nix module put in
 -- its `info` option; `vim.g.nix_info_plugin_name` is its name. Without nix
@@ -6,6 +6,11 @@
 -- config still runs on its own.
 
 local defaults = {
+    -- Spec name in nix/module.nix -> whether it is enabled. A missing name
+    -- counts as enabled, so without nix every file in gcleroux/plugins/ loads.
+    ---@type table<string, boolean>
+    specs = {},
+
     lsp = {
         -- Servers to `vim.lsp.enable()`. Comes from nix because only the
         -- build knows which language server binaries it actually ships.

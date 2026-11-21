@@ -13,18 +13,11 @@ vim.g.lze = {
     end,
 }
 
-require("lze").load({
-    { import = "gcleroux.plugins.deps" },
-    { import = "gcleroux.plugins.completion" },
-    { import = "gcleroux.plugins.editing" },
-    { import = "gcleroux.plugins.ui" },
-    { import = "gcleroux.plugins.finder" },
-    { import = "gcleroux.plugins.git" },
-    { import = "gcleroux.plugins.lsp" },
-    { import = "gcleroux.plugins.dap" },
-    { import = "gcleroux.plugins.markdown" },
-})
-
-if vim.fn.argc(-1) == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
-    require("lze").trigger_load("oil.nvim")
+local enabled = require("gcleroux.settings").specs
+local imports = {}
+for _, group in ipairs({ "deps", "completion", "editing", "ui", "finder", "git", "format", "lint", "dap", "markdown" }) do
+    if enabled[group] ~= false then
+        table.insert(imports, { import = "gcleroux.plugins." .. group })
+    end
 end
+require("lze").load(imports)

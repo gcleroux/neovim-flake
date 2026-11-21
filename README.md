@@ -117,19 +117,25 @@ A handful of plugins stay eager on purpose: `lze` itself, the colorscheme,
 `rainbow-delimiters` (it hooks `FileType` at startup) and `nvim-lspconfig`
 (only server definitions, read by `vim.lsp.enable()`).
 
-To add a plugin: put it in the matching spec in `nix/module.nix` (`lazy = true`
-puts it in `pack/*/opt`), then add its lze spec in `config/lua/gcleroux/plugins/`. Its
-name there is the plugin's directory name in the pack dir — `nvim-cmp`,
-`comment.nvim`, `oil.nvim`.
+To add a plugin: put it in a spec in `nix/module.nix` (`lazy = true` puts it in
+`pack/*/opt`), then add its lze spec to the file of the same name in
+`config/lua/gcleroux/plugins/`. Its name there is the plugin's directory name in the
+pack dir — `nvim-cmp`, `comment.nvim`, `oil.nvim`. A new spec also needs its
+name added to the list in `config/lua/gcleroux/plugins/init.lua`.
+
+Disabling a spec (`specs.dap.enable = false`) drops its plugins and binaries
+from the build, and lua skips the matching file, so none of its keymaps or
+commands are left pointing at a missing plugin.
 
 [lze]: https://github.com/BirdeeHub/lze
 [nix-wrapper-modules]: https://github.com/nix-community/nix-wrapper-modules
 
 ## Settings
 
-Nix passes lua only what lua cannot work out for itself: which language
-servers this build ships (`settings.servers`) and which flake nixd should
-evaluate (`settings.nixd`). Everything else is plain lua in `config/`.
+Nix passes lua only what lua cannot work out for itself: which specs are
+enabled, which language servers this build ships (`settings.servers`) and
+which flake nixd should evaluate (`settings.nixd`). Everything else is plain
+lua in `config/`.
 
-`config/lua/gcleroux/settings.lua` holds the defaults for both, so the tree in `config/`
+`config/lua/gcleroux/settings.lua` holds the defaults for all three, so the tree in `config/`
 also runs symlinked straight into `~/.config/nvim`, with no Nix.
