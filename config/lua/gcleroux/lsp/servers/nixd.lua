@@ -1,7 +1,7 @@
 -- nixd needs to know which flake to evaluate for completion of NixOS and
 -- home-manager options. That is deployment-specific, so it comes from
 -- `settings.nixd` (set by the consumer, see nix/module.nix).
-local settings = require("settings")
+local settings = require("gcleroux.settings")
 local nixd = settings.nixd
 
 if not nixd or not next(nixd) then

@@ -1,11 +1,7 @@
 local o = vim.o
--- local wo = vim.wo
--- local bo = vim.bo
 
--- Set the leader key to spacebar
 vim.g.mapleader = " "
 
--- Global options
 o.relativenumber = true
 o.clipboard = ""
 o.fileencoding = "utf-8"
@@ -24,10 +20,13 @@ o.cursorline = true
 o.termguicolors = true
 o.showmode = false
 o.foldcolumn = "0"
-o.foldlevel = 99 -- Large value keeps everything unfolded, decrease to taste
-o.foldlevelstart = 99 -- Starting at foldlevel 99 makes all code visible (unfolded)
+o.foldlevel = 99
+o.foldlevelstart = 99
 o.foldenable = true
 
--- Window local options
-
--- Buffer local options
+vim.filetype.add({
+    filename = {
+        [".env"] = "env",
+    },
+})
+vim.treesitter.language.register("bash", "env")

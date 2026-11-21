@@ -15,7 +15,7 @@ return {
         event = load_event,
         after = function()
             -- Diagnostics, LspAttach keymaps and `vim.lsp.enable()` per server
-            require("lsp")
+            require("gcleroux.lsp")
         end,
     },
 

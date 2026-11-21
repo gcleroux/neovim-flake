@@ -1,7 +1,7 @@
 # The whole wrapper: plugins, the tools they shell out to, and the lua config
 # directory, as one nix-wrapper-modules module.
 #
-# Each spec below mirrors a file in config/lua/specs/: the plugins, the
+# Each spec below mirrors a file in config/lua/gcleroux/plugins/: the plugins, the
 # binaries they call and whether they are lazy all live in one place. `lazy`
 # puts a plugin in pack/myNeovimPackages/opt, which is what lze packadds.
 {

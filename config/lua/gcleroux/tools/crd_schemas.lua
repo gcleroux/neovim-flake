@@ -72,7 +72,7 @@ local function get_crd_schema_list()
 end
 
 -- Main function to open fzf and insert modeline
-function M.insert_crd_schema_modeline()
+function M.insert_modeline()
     local schemas = get_crd_schema_list()
     if #schemas == 0 then
         vim.notify("No schemas available to select", vim.log.levels.WARN)
@@ -98,7 +98,5 @@ function M.insert_crd_schema_modeline()
         },
     })
 end
-
-vim.api.nvim_create_user_command("InsertCRDSchema", M.insert_crd_schema_modeline, {})
 
 return M

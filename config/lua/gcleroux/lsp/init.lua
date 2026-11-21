@@ -5,7 +5,7 @@
 -- need more than the lspconfig defaults get a `lua/lsp/servers/<name>.lua`
 -- returning a config table.
 
-local settings = require("settings")
+local settings = require("gcleroux.settings")
 
 -- Diagnostics
 vim.diagnostic.config({
@@ -76,7 +76,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 -- Per-server overrides, when the file exists
 local function server_config(name)
-    local mod = "lsp.servers." .. name
+    local mod = "gcleroux.lsp.servers." .. name
     if #vim.api.nvim_get_runtime_file("lua/" .. mod:gsub("%.", "/") .. ".lua", false) == 0 then
         return nil
     end
