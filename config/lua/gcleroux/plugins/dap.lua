@@ -152,4 +152,16 @@ return {
     -- runtimepath before it runs.
     { "nvim-dap-ui", dep_of = "nvim-dap", on_require = "dapui" },
     { "nvim-dap-virtual-text", dep_of = "nvim-dap" },
+
+    -- Loaded by nvim-cmp along with the other cmp sources
+    {
+        "cmp-dap",
+        lazy = true,
+        after = function()
+            require("cmp").setup.filetype({ "dap-repl", "dapui_watches", "dapui_hover" }, {
+                enabled = true,
+                sources = { { name = "dap" } },
+            })
+        end,
+    },
 }

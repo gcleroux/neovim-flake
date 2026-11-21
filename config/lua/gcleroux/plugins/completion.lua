@@ -94,9 +94,6 @@ return {
             local luasnip = require("luasnip")
 
             cmp.setup({
-                enabled = function()
-                    return vim.bo.buftype ~= "prompt" or require("cmp_dap").is_dap_buffer()
-                end,
                 snippet = {
                     expand = function(args)
                         luasnip.lsp_expand(args.body) -- For `luasnip` users.
@@ -127,14 +124,6 @@ return {
                         return vim_item
                     end,
                 },
-                filetype = {
-                    { "dap-repl" },
-                    { "dapui_watches" },
-                    { "dapui_hover" },
-                    sources = {
-                        name = "dap",
-                    },
-                },
                 sources = {
                     { name = "nvim_lsp" },
                     { name = "luasnip" },
@@ -161,7 +150,6 @@ return {
     { "cmp-buffer", lazy = true },
     { "cmp-path", lazy = true },
     { "cmp-emoji", lazy = true },
-    { "cmp-dap", lazy = true, on_require = "cmp_dap" },
     { "cmp_luasnip", lazy = true },
 
     {

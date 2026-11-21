@@ -124,7 +124,6 @@ in
         cmp-buffer
         cmp-path
         cmp-emoji
-        cmp-dap
         cmp_luasnip
         luasnip
         friendly-snippets
@@ -222,6 +221,7 @@ in
         nvim-dap
         nvim-dap-ui
         nvim-dap-virtual-text
+        cmp-dap
       ];
       runtimePkgs = [ pkgs.delve ];
     };
