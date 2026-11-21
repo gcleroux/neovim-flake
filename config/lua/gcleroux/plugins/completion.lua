@@ -96,9 +96,6 @@ return {
             local npairs = require("nvim-autopairs")
             npairs.setup({
                 check_ts = true,
-                ts_config = {
-                    lua = { "string", "source" },
-                },
                 fast_wrap = {
                     pattern = string.gsub([[ [%'%"%)%>%]%)%}%,] ]], "%s+", ""),
                     highlight = "PmenuSel",
