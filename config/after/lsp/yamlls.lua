@@ -21,7 +21,9 @@ local function associate_kubernetes(client, bufnr)
     if not is_kubernetes_manifest(bufnr) then
         return
     end
-    local schemas = client.settings.yaml.schemas
+    local yaml = client.settings.yaml
+    yaml.schemas = yaml.schemas or {}
+    local schemas = yaml.schemas
     schemas.kubernetes = schemas.kubernetes or {}
     local uri = vim.uri_from_bufnr(bufnr)
     if not vim.list_contains(schemas.kubernetes, uri) then
@@ -35,20 +37,6 @@ return {
         yaml = {
             -- The oldest cluster managed; bump it when that cluster is upgraded.
             kubernetesVersion = "1.34.1",
-            schemas = {
-                ["http://json.schemastore.org/github-workflow"] = ".github/workflows/*",
-                ["http://json.schemastore.org/github-action"] = ".github/action.{yml,yaml}",
-                ["http://json.schemastore.org/ansible-stable-2.9"] = "roles/tasks/*.{yml,yaml}",
-                ["http://json.schemastore.org/prettierrc"] = ".prettierrc.{yml,yaml}",
-                ["http://json.schemastore.org/kustomization"] = "kustomization.{yml,yaml}",
-                ["http://json.schemastore.org/ansible-playbook"] = "*play*.{yml,yaml}",
-                ["http://json.schemastore.org/chart"] = "Chart.{yml,yaml}",
-                ["https://json.schemastore.org/dependabot-v2"] = ".github/dependabot.{yml,yaml}",
-                ["https://json.schemastore.org/gitlab-ci"] = "*gitlab-ci*.{yml,yaml}",
-                ["https://raw.githubusercontent.com/OAI/OpenAPI-Specification/main/schemas/v3.1/schema.json"] = "*api*.{yml,yaml}",
-                ["https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json"] = "*docker-compose*.{yml,yaml}",
-                ["https://raw.githubusercontent.com/argoproj/argo-workflows/master/api/jsonschema/schema.json"] = "*flow*.{yml,yaml}",
-            },
         },
     },
     on_attach = function(client, bufnr)
